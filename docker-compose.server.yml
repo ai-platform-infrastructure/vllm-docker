@@ -18,6 +18,7 @@ services:
     restart: unless-stopped
     # Add support for GPU on the server.
     deploy:
+      replicas: 1
       resources:
         reservations:
           devices:
