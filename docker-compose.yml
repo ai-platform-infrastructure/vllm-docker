@@ -21,15 +21,13 @@ services:
     environment:
       NGINX_WEB_ROOT: /app
       NGINX_PORT: 8080
-      NGINX_ALLOW_IP: "${NGINX_ALLOW_IP}"
-      NGINX_ALLOW_METRICS_IP: "${NGINX_ALLOW_METRICS_IP}"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=frontend"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_DOMAIN}`)"
 
   vllm:
-    image: itkdev/vllm:cpu
+    image: vllm/vllm-openai
     command: "--model ${VLLM_MODEL:-facebook/opt-125m} ${VLLM_OPTIONS:-}"
     shm_size: "${SHM_SIZE:-8gb}"
     networks:
@@ -39,7 +37,7 @@ services:
     ports:
       - "8000"
     environment:
-      - "HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN}"
-      - "VLLM_API_KEY=${VLLM_API_KEY}"
+      - "HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:?}"
+      - "VLLM_API_KEY=${VLLM_API_KEY:?}"
     volumes:
       - ./.docker/data/vllm/:/root/.cache/huggingface:rw
