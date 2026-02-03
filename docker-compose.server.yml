@@ -12,7 +12,8 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_SERVER_DOMAIN}`)"
 
   vllm:
-    image: vllm/vllm-openai
+    # NGC image required for Blackwell GPU support and NVFP4 quantization
+    image: nvcr.io/nvidia/vllm:26.01-py3
     restart: unless-stopped
     # Add support for GPU on the server.
     deploy:
