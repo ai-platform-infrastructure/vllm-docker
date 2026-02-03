@@ -39,7 +39,7 @@ services:
     environment:
       - "HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:?}"
       - "VLLM_API_KEY=${VLLM_API_KEY:?}"
-      - "VLLM_ATTENTION_BACKEND=${VLLM_ATTENTION_BACKEND:-}"
       - "VLLM_USE_FLASHINFER_MOE_FP4=${VLLM_USE_FLASHINFER_MOE_FP4:-}"
     volumes:
       - ./.docker/data/vllm/:/root/.cache/huggingface:rw
+      - ./.docker/data/vllm-cache/:/root/.cache/vllm:rw
