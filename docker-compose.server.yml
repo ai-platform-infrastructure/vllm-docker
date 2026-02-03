@@ -14,6 +14,8 @@ services:
   vllm:
     # NGC image required for Blackwell GPU support and NVFP4 quantization
     image: nvcr.io/nvidia/vllm:26.01-py3
+    # NGC container requires explicit 'vllm serve' command
+    command: "vllm serve ${VLLM_MODEL:-facebook/opt-125m} ${VLLM_OPTIONS:-}"
     restart: unless-stopped
     # Add support for GPU on the server.
     deploy:
