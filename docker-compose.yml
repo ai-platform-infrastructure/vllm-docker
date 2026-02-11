@@ -41,6 +41,12 @@ services:
       - "HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:?}"
       - "VLLM_API_KEY=${VLLM_API_KEY:?}"
       - "VLLM_USE_FLASHINFER_MOE_FP4=${VLLM_USE_FLASHINFER_MOE_FP4:-}"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8000/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
     volumes:
       - ./.docker/data/vllm/:/root/.cache/huggingface:rw
       - ./.docker/data/vllm-cache/:/root/.cache/vllm:rw
