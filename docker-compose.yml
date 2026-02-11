@@ -78,6 +78,12 @@ services:
       STORE_MODEL_IN_DB: "False" # disable adding models to proxy via UI
     networks:
       - app
+      - frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm.rule=Host(`${COMPOSE_LITELLM_DOMAIN}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}-litellm.loadbalancer.server.port=4000"
     ports:
       - "4000"
     depends_on:

@@ -26,3 +26,18 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+
+  postgres:
+    restart: unless-stopped
+
+  litellm:
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm-http.rule=Host(`${COMPOSE_LITELLM_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm-http.entrypoints=web"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm-http.middlewares=redirect-to-https"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm.entrypoints=websecure"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-litellm.rule=Host(`${COMPOSE_LITELLM_DOMAIN}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}-litellm.loadbalancer.server.port=4000"
