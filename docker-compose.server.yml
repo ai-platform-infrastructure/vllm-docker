@@ -12,12 +12,10 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_SERVER_DOMAIN}`)"
 
   vllm:
-    # NGC image required for Blackwell GPU support and NVFP4 quantization
-    image: nvcr.io/nvidia/vllm:26.01-py3
-    # NGC container requires explicit 'vllm serve' command
-    command: "vllm serve ${VLLM_MODEL:-facebook/opt-125m} ${VLLM_OPTIONS:-}"
+    # Upstream cu130-nightly for Qwen3.5 + Blackwell (SM120) support
+    image: vllm/vllm-openai:cu130-nightly
+    ipc: host
     restart: unless-stopped
-    # Add support for GPU on the server.
     deploy:
       replicas: 1
       resources:
