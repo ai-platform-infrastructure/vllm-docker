@@ -11,10 +11,19 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_SERVER_DOMAIN}`)"
 
-  vllm:
-    image: vllm/vllm-openai
+  vllm-e5:
     restart: unless-stopped
-    # Add support for GPU on the server.
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  vllm-bge:
+    restart: unless-stopped
     deploy:
       replicas: 1
       resources:

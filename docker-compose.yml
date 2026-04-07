@@ -12,7 +12,8 @@ services:
       - app
       - frontend
     depends_on:
-      - vllm
+      - vllm-e5
+      - vllm-bge
     ports:
       - '8080'
     volumes:
@@ -26,10 +27,26 @@ services:
       - "traefik.docker.network=frontend"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_DOMAIN}`)"
 
-  vllm:
-    image: vllm/vllm-openai
-    command: "--model ${VLLM_MODEL:-facebook/opt-125m} ${VLLM_OPTIONS:-}"
-    shm_size: "${SHM_SIZE:-8gb}"
+  vllm-e5:
+    image: nvcr.io/nvidia/vllm:26.01-py3
+    command: "vllm serve ${VLLM_E5_MODEL:-intfloat/multilingual-e5-large} ${VLLM_E5_OPTIONS:-}"
+    shm_size: "${SHM_E5_SIZE:-8gb}"
+    networks:
+      - app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000"
+    environment:
+      - "HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:?}"
+      - "VLLM_API_KEY=${VLLM_API_KEY:?}"
+    volumes:
+      - ./.docker/data/vllm/:/root/.cache/huggingface:rw
+
+  vllm-bge:
+    image: nvcr.io/nvidia/vllm:26.01-py3
+    command: "vllm serve ${VLLM_BGE_MODEL:-BAAI/bge-m3} ${VLLM_BGE_OPTIONS:-}"
+    shm_size: "${SHM_BGE_SIZE:-8gb}"
     networks:
       - app
     extra_hosts:
