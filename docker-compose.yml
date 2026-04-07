@@ -29,7 +29,7 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_DOMAIN}`)"
 
   vllm-e5:
-    image: nvcr.io/nvidia/vllm:26.01-py3
+    image: nvcr.io/nvidia/vllm:26.03-py3
     command: "vllm serve ${VLLM_E5_MODEL:-intfloat/multilingual-e5-large} ${VLLM_E5_OPTIONS:-}"
     shm_size: "${SHM_E5_SIZE:-8gb}"
     networks:
@@ -45,7 +45,7 @@ services:
       - ./.docker/data/vllm/:/root/.cache/huggingface:rw
 
   vllm-bge:
-    image: nvcr.io/nvidia/vllm:26.01-py3
+    image: nvcr.io/nvidia/vllm:26.03-py3
     command: "vllm serve ${VLLM_BGE_MODEL:-BAAI/bge-m3} ${VLLM_BGE_OPTIONS:-}"
     shm_size: "${SHM_BGE_SIZE:-8gb}"
     networks:
